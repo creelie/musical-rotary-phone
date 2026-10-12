@@ -1,0 +1,12 @@
+build/
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.blg
+*.bbl
+*.spl
+__pycache__/
+.lake/

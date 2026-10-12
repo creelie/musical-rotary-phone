@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "The number of terms in greedy Fibonacci-Lucas representations"
+type: software
+authors:
+  - family-names: Bhattacharjee
+    given-names: Deep
+    orcid: "https://orcid.org/0000-0003-0466-750X"
+    affiliation: "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
+    email: d.bhattacharjee@erl-forschung.de
+version: 1.0.0
+date-released: 2026-10-12
+license: MIT
+repository-code: "https://github.com/creelie/musical-rotary-phone"
+keywords:
+  - Fibonacci numbers
+  - Lucas numbers
+  - Zeckendorf representation
+  - greedy algorithm
+  - OEIS
+  - Lean 4
+abstract: >-
+  Let a(n) be the number of terms in the greedy representation of n by the
+  Fibonacci and Lucas numbers (OEIS A214973). We prove that
+  a(1) + ... + a(n) = (1/5) n log_phi n + O(n). With Lekkerkerker's theorem
+  this settles Kimberling's conjecture that the ratio of the number of Zeckendorf summands of 1, ..., n
+  to this sum tends to a limit in (1.2, 1.4); the limit is (5 - sqrt 5)/2.
+  We also prove the conjectures of Greathouse and Kurkov on A214973. The
+  proofs are formalized in Lean 4.
+references:
+  - type: article
+    title: "Lucas representations of positive integers"
+    authors:
+      - family-names: Kimberling
+        given-names: Clark
+    year: 2020
+    journal: "Journal of Integer Sequences"
+    volume: 23
+    url: "https://cs.uwaterloo.ca/journals/JIS/VOL23/Kimberling/kimber12.html"
+    notes: "Article 20.9.5"

@@ -1,0 +1,39 @@
+{
+  "title": "The number of terms in greedy Fibonacci-Lucas representations: paper, Lean 4 formalization and verification code",
+  "description": "<p>Let a(n) be the number of terms in the greedy representation of n by the Fibonacci and Lucas numbers (OEIS A214973). The paper proves that a(1) + ... + a(n) = (1/5) n log_phi n + O(n), with explicit bounds |5T(x) - K(x) x| &lt;= 19x and |5Z(x) - c K(x) x| &lt;= 13x for the summatory functions, so that the ratio of the number of Zeckendorf summands of 1, ..., n to this sum tends to (5 - sqrt 5)/2. This settles Kimberling's conjecture (A214981; J. Integer Seq. 23 (2020), Article 20.9.5) that the limit exists and lies in (1.2, 1.4). It also proves Greathouse's conjecture that n first occurs in A214973 at (F_{3n+1} - 1)/2, and Kurkov's conjecture a(n) = A329320(A048679(n)).</p><p><code>paper/</code> holds the LaTeX source in the Fibonacci Quarterly template and the compiled PDF; <code>dist/</code> holds the PDF, the LaTeX source zip, the arXiv tarball and <code>MasterKimberlingFibonacciLucasZip.zip</code> with every file of the repository. <code>verification/lean/</code> is a Lean 4 and Mathlib formalization of the three theorems (6 files); its eight main theorems depend only on the axioms propext, Classical.choice and Quot.sound. <code>verification/</code> also contains independent checks in C and C++ (n &lt;= 10^8), Python (n &lt;= 10^6, from the OEIS definitions), Julia (every lemma of the proofs) and Bash, and <code>scripts/run_all.sh</code> runs the Lean build, the axiom check and all programs.</p>",
+  "upload_type": "software",
+  "license": "mit",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Bhattacharjee, Deep",
+      "orcid": "0000-0003-0466-750X"
+    }
+  ],
+  "keywords": [
+    "Fibonacci numbers",
+    "Lucas numbers",
+    "Zeckendorf representation",
+    "greedy algorithm",
+    "OEIS",
+    "Lean 4"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://cs.uwaterloo.ca/journals/JIS/VOL23/Kimberling/kimber12.html",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://oeis.org/A214973",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://oeis.org/A214981",
+      "relation": "references",
+      "scheme": "url"
+    }
+  ],
+  "language": "eng"
+}
