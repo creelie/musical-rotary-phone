@@ -101,6 +101,11 @@ python3, julia, a C compiler and a C++17 compiler.
 
 To build the paper and the release files: `scripts/build_paper.sh`.
 
+## Archive
+
+Zenodo, all versions: [10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122);
+release v1.0.0: [10.5281/zenodo.23315123](https://doi.org/10.5281/zenodo.23315123).
+
 ## License
 
 MIT, see `LICENSE`.
