@@ -1,0 +1,370 @@
+\documentclass[]{interact}
+\setlength{\voffset}{-.25in}
+\sloppy
+% packages already loaded by interact.cls: amsmath,amssymb,amsfonts,amsbsy,amsthm,booktabs,epsfig,graphicx,rotating
+\usepackage{latexsym}
+\usepackage{anyfontsize}
+\usepackage{color}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage{url}
+
+\makeatletter
+\newcommand{\monthyear}[1]{%
+  \def\@monthyear{\uppercase{#1}}}
+\newcommand{\volnumber}[1]{%
+  \def\@volnumber{\uppercase{#1}}}
+\makeatother
+
+\newcommand{\N}{{\mathbb N}}
+\newcommand{\fl}[1]{\left\lfloor #1\right\rfloor}
+
+\theoremstyle{plain}
+\numberwithin{equation}{section}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{theorem}[thm]{Theorem}
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{corollary}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{conjecture}[thm]{Conjecture}
+
+\begin{document}
+
+\monthyear{Month Year}
+\volnumber{Volume, Number}
+\setcounter{page}{1}
+
+\title{The Number of Terms in Greedy Fibonacci--Lucas Representations}
+
+\author{
+\name{Deep Bhattacharjee\thanks{Email address: d.bhattacharjee@erl-forschung.de. ORCID: 0000-0003-0466-750X.}}
+\affil{Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India}
+}
+
+\maketitle
+
+{\bf Article type}: research
+\bigskip
+
+\begin{abstract}
+Let $a(n)$ be the number of terms in the greedy representation of $n$ by the Fibonacci and Lucas numbers (OEIS A214973). We prove that $a(1)+\cdots+a(n)=\frac15 n\log_\varphi n+O(n)$. With Lekkerkerker's theorem this settles Kimberling's conjecture that the ratio of the number of Zeckendorf summands of $1,\dots,n$ to this sum tends to a limit in $(1.2,1.4)$; the limit is $(5-\sqrt5)/2$. We also prove the conjectures of Greathouse and Kurkov on A214973: $n$ first occurs at position $(F_{3n+1}-1)/2$, and $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$. The proofs are formalized in Lean~4.
+\end{abstract}
+
+\begin{keywords}
+Fibonacci numbers; Lucas numbers; Zeckendorf representation; greedy algorithm; summatory function
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}\label{sec:intro}
+
+Let $F_k$ and $L_k$ be the Fibonacci and Lucas numbers, $F_0=0$, $F_1=1$, $L_0=2$, $L_1=1$, let $\varphi=(1+\sqrt5)/2$ and $\psi=(1-\sqrt5)/2$, and let
+\[
+S=\{1,2,3,4,5,7,8,11,13,18,21,29,\dots\}
+\]
+be the set of positive Fibonacci and Lucas numbers (A116470 in the OEIS \cite{OEIS}). For $n\ge 1$ let $g(n)$ be the largest element of $S$ that is at most $n$. The greedy algorithm subtracts $g(n)$ from $n$ and repeats; the number of terms it produces is
+\[
+a(0)=0,\qquad a(n)=1+a(n-g(n))\quad(n\ge1),
+\]
+which is A214973. Let $z(n)$ be the number of terms in the Zeckendorf representation of $n$ (A007895), and let
+\[
+W(n)=\sum_{i=1}^n a(i),\qquad V(n)=\sum_{i=1}^n z(i)
+\]
+be A214981 and A179180. Representations by Lucas numbers go back to Carlitz, Scoville and Hoggatt \cite{CSH72}. Kimberling \cite[Section~6]{Kim20} recorded the following conjecture, also stated in A214981.
+
+\begin{conjecture}[Kimberling]\label{conj:kim}
+The limit of $V(n)/W(n)$ exists and lies in the interval $(1.2,1.4)$.
+\end{conjecture}
+
+Two more conjectures, from 2021, are recorded in A214973. Let $\mathrm{A049651}(j)=(F_{3j+1}-1)/2$.
+
+\begin{conjecture}[Greathouse]\label{conj:gh}
+For every $j\ge1$, $a(\mathrm{A049651}(j))=j$, and this is the first occurrence of $j$ in A214973; that is, apart from its initial term, A049651 is the sequence of record positions of A214973.
+\end{conjecture}
+
+The statement that A049651$(j)$ is the least $n$ with $a(n)=j$ appeared earlier, without proof, in a 2012 comment by Kimberling in A049651.
+
+\begin{conjecture}[Kurkov]\label{conj:kur}
+For every $n\ge1$, $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$.
+\end{conjecture}
+
+Here, if $n=F_{k_1}+\cdots+F_{k_s}$ is the Zeckendorf representation of $n$, with $k_1>\cdots>k_s\ge2$ and $k_i-k_{i+1}\ge2$, then $\mathrm{A003714}(n)=\sum_i 2^{k_i-2}$, whose binary word has no two adjacent ones. Preceded by a zero, such a word is a concatenation of the words $0$ and $01$ in exactly one way, and $\mathrm{A048679}(n)$ is the number whose binary word is obtained by replacing each factor $01$ by $1$. Finally $\mathrm{A035263}(m)$ is the parity of the $2$-adic valuation $\nu_2(2m)$, and
+\[
+\mathrm{A329320}(y)=\sum_{k=0}^{\fl{\log_2 y}}\bigl(1-\mathrm{A035263}(1+\fl{y/2^k})\bigr),\qquad \mathrm{A329320}(0)=0.
+\]
+
+For $x\ge1$ let $K(x)$ be the index $k\ge2$ with $F_k\le x<F_{k+1}$, and put $K(0)=0$. We prove the three conjectures.
+
+\begin{theorem}\label{thm:kim}
+Let $T(x)=W(x-1)$ and $Z(x)=V(x-1)$ for $x\ge1$, and let $c=(5-\sqrt5)/2=2+\psi$. For every $x\ge1$,
+\begin{equation}\label{eq:bounds}
+\bigl|5T(x)-K(x)\,x\bigr|\le 19x,\qquad \bigl|5Z(x)-c\,K(x)\,x\bigr|\le 13x.
+\end{equation}
+Consequently $W(n)=\frac15 n\log_\varphi n+O(n)$, $V(n)=\frac c5 n\log_\varphi n+O(n)$,
+\begin{equation}\label{eq:rate}
+\Bigl|\frac{V(n)}{W(n)}-c\Bigr|\le\frac{51}{K(n+1)-19}\qquad\text{whenever } K(n+1)>19,
+\end{equation}
+and $V(n)/W(n)\to(5-\sqrt5)/2=1.38196\ldots$, which lies in $(1.2,1.4)$. In particular Conjecture~\ref{conj:kim} holds.
+\end{theorem}
+
+The formula for $V(n)$ agrees with Lekkerkerker's theorem on the average number of Zeckendorf summands \cite{Lek52,KKMW11}, since $c/5=1/(\varphi^2+1)$. Pihko \cite{Pih88} proved the analogues of that theorem for the minimal and maximal Lucas representations and the maximal Fibonacci representation. Theorem~\ref{thm:kim} shows that the greedy algorithm over $S$ uses on average $\frac15\log_\varphi n$ terms.
+
+\begin{theorem}\label{thm:gh}
+For every $j\ge1$, $a(\mathrm{A049651}(j))=j$ and $a(m)<j$ for $0\le m<\mathrm{A049651}(j)$. Hence Conjecture~\ref{conj:gh} holds.
+\end{theorem}
+
+\begin{theorem}\label{thm:kur}
+For every $n\ge0$, $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$. Hence Conjecture~\ref{conj:kur} holds.
+\end{theorem}
+
+The proof of Theorem~\ref{thm:kur} gives $a(n)$ in terms of the Zeckendorf representation of $n$: if its indices form maximal chains $k,k-2,k-4,\dots$ of lengths $\ell_1,\dots,\ell_t$, then $a(n)=\sum_i\lceil\ell_i/2\rceil$ (Corollary~\ref{cor:chains}). Section~\ref{sec:lean} describes the Lean~4 formalization of the three theorems and the programs that check them numerically.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The greedy step}\label{sec:greedy}
+
+We use $L_m=F_{m-1}+F_{m+1}$ for $m\ge1$.
+
+\begin{lemma}\label{lem:block}
+For $k\ge4$,
+\[
+F_k<L_{k-1}<F_{k+1},\qquad L_{k-1}-F_k=F_{k-2},\qquad F_{k+1}-L_{k-1}=F_{k-3},
+\]
+and $S\cap[F_k,F_{k+1})=\{F_k,L_{k-1}\}$. Hence, for $F_k\le n<F_{k+1}$,
+\begin{equation}\label{eq:step}
+a(n)=\begin{cases}1+a(n-F_k), & n<L_{k-1},\\ 1+a(n-L_{k-1}), & n\ge L_{k-1}.\end{cases}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The identities follow from $L_{k-1}=F_{k-2}+F_k$ and $F_{k+1}-F_k-F_{k-2}=F_{k-1}-F_{k-2}=F_{k-3}$, and $F_{k-2},F_{k-3}\ge1$ gives the inequalities. The only Fibonacci number in $[F_k,F_{k+1})$ is $F_k$. For the Lucas numbers, $L_0=2<F_k$, the sequence $(L_m)_{m\ge1}$ is increasing, $L_{k-2}=F_{k-3}+F_{k-1}\le F_{k-2}+F_{k-1}=F_k$, and $L_k=F_{k-1}+F_{k+1}>F_{k+1}$. So $L_{k-1}$ is the only Lucas number in $(F_k,F_{k+1})$.
+\end{proof}
+
+For $1\le n\le2$ we have $a(n)=1$. The Zeckendorf representation satisfies $z(n)=1+z(n-F_k)$ for $F_k\le n<F_{k+1}$, $k\ge2$, since its leading term is the largest Fibonacci number at most $n$.
+
+\begin{lemma}\label{lem:pairing}
+Let $n=F_{k_1}+\cdots+F_{k_s}$ be the Zeckendorf representation of $n\ge1$. If $s\ge2$ and $k_2=k_1-2$, then $a(n)=1+a(F_{k_3}+\cdots+F_{k_s})$; otherwise $a(n)=1+a(F_{k_2}+\cdots+F_{k_s})$.
+\end{lemma}
+
+\begin{proof}
+If $k_1\le3$ then $n\in\{1,2\}$, $s=1$ and $a(n)=1$. Let $k=k_1\ge4$, so $F_k\le n<F_{k+1}$, and let $r=n-F_k$. If $k_2=k-2$, then $n\ge F_k+F_{k-2}=L_{k-1}$ and $n-L_{k-1}=F_{k_3}+\cdots+F_{k_s}$. Otherwise $r=0$ or $r<F_{k_2+1}\le F_{k-2}$, so $n<L_{k-1}$. In both cases \eqref{eq:step} gives the claim.
+\end{proof}
+
+So the greedy algorithm over $S$ is the Zeckendorf algorithm in which a leading summand $F_k$ followed by $F_{k-2}$ is merged into $L_{k-1}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The summatory functions}\label{sec:sum}
+
+Write $T(x)=\sum_{0\le i<x}a(i)$ and $Z(x)=\sum_{0\le i<x}z(i)$, so that $W(n)=T(n+1)$ and $V(n)=Z(n+1)$. If $f(i)=1+f(i-b)$ for $b\le i<d$, then $\sum_{i<x}f(i)=\sum_{i<b}f(i)+(x-b)+\sum_{i<x-b}f(i)$ for $b\le x\le d$. With Lemma~\ref{lem:block} this gives, for $k\ge4$,
+\begin{align}
+T(x)&=T(F_k)+(x-F_k)+T(x-F_k), && F_k\le x\le L_{k-1},\label{eq:T1}\\
+T(x)&=T(L_{k-1})+(x-L_{k-1})+T(x-L_{k-1}), && L_{k-1}\le x\le F_{k+1},\label{eq:T2}
+\end{align}
+and, for $k\ge2$,
+\begin{equation}\label{eq:Z1}
+Z(x)=Z(F_k)+(x-F_k)+Z(x-F_k),\qquad F_k\le x\le F_{k+1}.
+\end{equation}
+
+\begin{lemma}\label{lem:Tfib}
+Let $e_k=5T(F_k)-kF_k$. Then $e_{k+1}=e_k+e_{k-2}+e_{k-3}$ for $k\ge4$, and $|e_k|\le 2F_k$ for $k\ge1$.
+\end{lemma}
+
+\begin{proof}
+Taking $x=L_{k-1}$ in \eqref{eq:T1} and $x=F_{k+1}$ in \eqref{eq:T2},
+\[
+T(F_{k+1})=T(F_k)+T(F_{k-2})+T(F_{k-3})+F_{k-1}\qquad(k\ge4).
+\]
+Multiplying by $5$ and subtracting $(k+1)F_{k+1}$, the recursion for $e_k$ follows from
+\[
+kF_k+(k-2)F_{k-2}+(k-3)F_{k-3}+5F_{k-1}=(k+1)F_{k+1},
+\]
+which holds because $F_{k-2}+F_{k-3}=F_{k-1}$ reduces it to $5F_{k-1}-2F_{k-2}-3F_{k-3}=F_{k+1}$, and both sides equal $2F_{k-1}+F_{k-2}$. Since $T(1)=0$, $T(2)=1$ and $T(3)=2$, we get $(e_1,e_2,e_3,e_4)=(-1,-2,-1,-2)$, so $|e_k|\le2F_k$ for $k\le4$, and by induction $|e_{k+1}|\le2(F_k+F_{k-2}+F_{k-3})=2F_{k+1}$.
+\end{proof}
+
+\begin{lemma}\label{lem:Zfib}
+For $k\ge1$, $5Z(F_k)=k(2F_k-F_{k-1})-2F_k$, and $|5Z(F_k)-c\,kF_k|\le4F_k$.
+\end{lemma}
+
+\begin{proof}
+The formula holds for $k=1,2,3$, where $Z(F_k)=0,0,1$. Taking $x=F_{k+1}$ in \eqref{eq:Z1} gives $Z(F_{k+1})=Z(F_k)+F_{k-1}+Z(F_{k-1})$ for $k\ge2$, and the formula for $k+1$ follows from the formulas for $k$ and $k-1$ and the identity
+\[
+k(2F_k-F_{k-1})+(k-1)(2F_{k-1}-F_{k-2})+3F_{k-1}-2F_k=(k+1)(2F_{k+1}-F_k)-2F_{k+1},
+\]
+in which, after $F_{k+1}=F_k+F_{k-1}$, the coefficients of $k$ agree because $F_{k-1}+F_{k-2}=F_k$, and the remaining terms are $-(2F_{k-1}-F_{k-2})+3F_{k-1}-2F_k=-F_k$ on the left and $(2F_{k+1}-F_k)-2F_{k+1}=-F_k$ on the right. For the bound, $\psi F_k+F_{k-1}=\psi^k$ by induction on $k$ (using $\psi^2=\psi+1$), so
+\[
+5Z(F_k)-c\,kF_k=-k(F_{k-1}+\psi F_k)-2F_k=-k\psi^k-2F_k,
+\]
+and $|\psi|<1$ and $k\le2F_k$ give $|5Z(F_k)-c\,kF_k|\le k+2F_k\le4F_k$.
+\end{proof}
+
+\begin{lemma}\label{lem:gap}
+If $r\ge0$ and $k\ge K(r)$, then $0\le (k-K(r))\,r\le 2F_k$.
+\end{lemma}
+
+\begin{proof}
+The claim is clear if $r=0$ or $k=K(r)$. Otherwise let $j=K(r)<k$ and $d=k-j-1\ge0$. Then $r<F_{j+1}$, and $F_{k}=F_{j}F_{d}+F_{j+1}F_{d+1}\ge F_{j+1}F_{d+1}$ together with $d+1\le 2F_{d+1}$ gives $(k-j)\,r\le(d+1)F_{j+1}\le 2F_k$.
+\end{proof}
+
+\begin{proposition}\label{prop:T}
+For every $x\ge0$, $|5T(x)-K(x)\,x|\le19x$.
+\end{proposition}
+
+\begin{proof}
+By induction on $x$. For $x=0,1,2$ the left side is $0$, $2$ and $1$. Let $x\ge3$ and $k=K(x)\ge4$.
+
+If $x\le L_{k-1}$, let $r=x-F_k$. Then $r\le F_{k-2}$, so $K(r)\le k$, and by \eqref{eq:T1}
+\[
+5T(x)-kx=e_k+5r+\bigl(5T(r)-K(r)\,r\bigr)-\bigl(k-K(r)\bigr)r.
+\]
+By Lemmas~\ref{lem:Tfib} and \ref{lem:gap} and the induction hypothesis, this lies between $-4F_k-14r$ and $2F_k+24r$. Since $r\le F_k$ and $x=F_k+r$, both bounds are at most $19x$ in absolute value.
+
+If $x>L_{k-1}$, let $r=x-L_{k-1}<F_{k-3}$. By \eqref{eq:T2} and \eqref{eq:T1} at $x=L_{k-1}$, and since $x=F_k+F_{k-2}+r$,
+\[
+5T(x)-kx=e_k+e_{k-2}+3F_{k-2}+5r+\bigl(5T(r)-K(r)\,r\bigr)-\bigl(k-K(r)\bigr)r,
+\]
+which lies between $-4F_k+F_{k-2}-14r$ and $2F_k+5F_{k-2}+24r$; both are at most $19x$ in absolute value.
+\end{proof}
+
+\begin{proposition}\label{prop:Z}
+For every $x\ge0$, $|5Z(x)-c\,K(x)\,x|\le13x$.
+\end{proposition}
+
+\begin{proof}
+By induction on $x$; the case $x=0$ is trivial. Let $x\ge1$, $k=K(x)\ge2$ and $r=x-F_k<F_{k-1}$, so $K(r)\le k$ and $r\le F_k$. By \eqref{eq:Z1},
+\[
+5Z(x)-c\,kx=\bigl(5Z(F_k)-c\,kF_k\bigr)+5r+\bigl(5Z(r)-c\,K(r)\,r\bigr)-c\,\bigl(k-K(r)\bigr)r.
+\]
+Since $0<c\le2$, Lemmas~\ref{lem:Zfib} and \ref{lem:gap} and the induction hypothesis place this between $-8F_k-8r$ and $4F_k+18r$, and both are at most $13x=13F_k+13r$ in absolute value.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:kim}]
+The bounds \eqref{eq:bounds} are Propositions~\ref{prop:T} and \ref{prop:Z}. Let $x=n+1$ and $K=K(x)$. Then $W(n)=T(x)$ and $V(n)=Z(x)$, and
+\[
+5V(n)-5cW(n)=\bigl(5Z(x)-cKx\bigr)-c\bigl(5T(x)-Kx\bigr)
+\]
+has absolute value at most $13x+2\cdot19x=51x$, while $5W(n)\ge(K-19)\,x$. This gives \eqref{eq:rate}, and $K(n+1)\to\infty$ gives the limit. From $\varphi^{k-2}\le F_k\le\varphi^{k-1}$ we get $\log_\varphi x<K(x)\le\log_\varphi x+2$, which with \eqref{eq:bounds} gives the asymptotic formulas. Finally $6/5<(5-\sqrt5)/2<7/5$ because $121<125<169$.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The records}\label{sec:records}
+
+Let $R_j=F_2+F_5+\cdots+F_{3j-1}=\sum_{i<j}F_{3i+2}$. Since $F_{3j+1}+2F_{3j+2}=F_{3j+3}+F_{3j+2}=F_{3j+4}$, induction gives $2R_j+1=F_{3j+1}$, so $R_j=\mathrm{A049651}(j)$. Moreover $R_j<F_{3j}$ for $j\ge1$, since $2R_j<F_{3j+1}\le2F_{3j}$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:gh}]
+First, $a(R_j)=j$. This holds for $j=0,1$. For $j\ge2$ let $k=3j-1\ge5$. Then $R_j=F_k+R_{j-1}$ and $R_{j-1}<F_{k-2}$, so $F_k\le R_j<L_{k-1}$, and \eqref{eq:step} gives $a(R_j)=1+a(R_{j-1})=j$.
+
+Second, $a(m)\ge j$ implies $m\ge R_j$. We use induction on $m$. The cases $j\le1$ and $m\le2$ are clear, so let $j=t+2$ with $t\ge0$, and let $m\ge3$ and $k=K(m)\ge4$. By \eqref{eq:step} there is $r$ with $a(r)=a(m)-1\ge t+1$, where either $r=m-F_k<F_{k-2}$ or $r=m-L_{k-1}<F_{k-3}$. By induction $r\ge R_{t+1}\ge F_{3t+2}$, so $F_{3t+2}<F_{k-2}$, hence $3t+2<k-2$ and $F_{3t+5}\le F_k$. In both cases $m\ge F_k+r\ge F_{3t+5}+R_{t+1}=R_{t+2}$.
+
+So $a(m)<j$ for $m<R_j$, and $a(R_j)=j$. Thus $R_j$ is the first occurrence of $j$, and since $R_1<R_2<\cdots$, the records of A214973 occur exactly at $R_1,R_2,\dots$.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kurkov's formula}\label{sec:kurkov}
+
+Let $n=F_{k_1}+\cdots+F_{k_s}$ be the Zeckendorf representation of $n\ge1$. A \emph{chain} is a maximal run $k_i,k_{i+1},\dots,k_{i+\ell-1}$ of consecutive indices with $k_{p}-k_{p+1}=2$ for $i\le p<i+\ell-1$; the indices split into chains of lengths $\ell_1,\dots,\ell_t$, and consecutive chains are separated by gaps $k_p-k_{p+1}\ge3$.
+
+\begin{corollary}\label{cor:chains}
+$a(n)=\sum_{i=1}^t\lceil\ell_i/2\rceil$.
+\end{corollary}
+
+\begin{proof}
+Apply Lemma~\ref{lem:pairing} repeatedly. Along a chain it merges the first and second terms, the third and fourth, and so on, giving $\lceil\ell/2\rceil$ terms; it never merges the last term of a chain with the first term of the next, since they differ by at least $3$.
+\end{proof}
+
+\begin{lemma}\label{lem:compress}
+$\mathrm{A048679}(n)=\sum_{i=1}^s2^{h_i}$ with $h_i=k_i-2-(s-i)$. The exponents satisfy $h_1>\cdots>h_s\ge0$, and $h_i-h_{i+1}=1$ if and only if $k_i-k_{i+1}=2$.
+\end{lemma}
+
+\begin{proof}
+The binary word of $\mathrm{A003714}(n)$, preceded by a zero, consists of the factors $01$ occupying positions $k_i-1,k_i-2$ ($1\le i\le s$; position $0$ is the units digit), separated by zeros. These factors are disjoint because $k_{i+1}-1\le k_i-3$. Replacing each $01$ by $1$ moves the digit at position $k_i-2$ down by one place for each of the $s-i$ factors below it, so it lands at position $h_i$. Finally $h_i-h_{i+1}=k_i-k_{i+1}-1\ge1$ and $h_s=k_s-2\ge0$.
+\end{proof}
+
+\begin{lemma}\label{lem:A329320}
+For $y\ge0$, $\mathrm{A329320}(y)=\sum\lceil\ell/2\rceil$, the sum over the maximal blocks of consecutive ones in the binary word of $y$, of lengths $\ell$.
+\end{lemma}
+
+\begin{proof}
+Since $\nu_2(2m)=1+\nu_2(m)$, we have $1-\mathrm{A035263}(1+u)=\nu_2(u+1)\bmod2$, and $\nu_2(\fl{y/2^k}+1)$ is the number of consecutive ones of $y$ starting at position $k$ and going up. This number is $0$ if the digit at position $k$ is $0$, and, along a block of $\ell$ ones, it takes the values $\ell,\ell-1,\dots,1$, of which $\lceil\ell/2\rceil$ are odd. The sum defining $\mathrm{A329320}(y)$ runs over the positions $0,\dots,\fl{\log_2y}$, which contain every block.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:kur}]
+For $n=0$ both sides are $0$. For $n\ge1$, Lemma~\ref{lem:compress} shows that the blocks of ones of $\mathrm{A048679}(n)$ correspond to the chains of the Zeckendorf representation of $n$, with the same lengths. Lemma~\ref{lem:A329320} and Corollary~\ref{cor:chains} give $\mathrm{A329320}(\mathrm{A048679}(n))=\sum_i\lceil\ell_i/2\rceil=a(n)$.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Formal verification and computations}\label{sec:lean}
+
+Theorems~\ref{thm:kim}, \ref{thm:gh} and \ref{thm:kur} are formalized in Lean~4 \cite{MU21} with Mathlib \cite{Mathlib20} (version 4.34.1), in six files with 1460 lines, in the directory \texttt{verification/lean} of the archive described under Data availability. The definitions follow the OEIS names: \texttt{greedyTerm n} is the largest $s\le n$ that is a positive Fibonacci number or a Lucas number, \texttt{a214973} is defined by the greedy recursion, \texttt{a007895 n} is the length of Mathlib's Zeckendorf representation, \texttt{a214981} and \texttt{a179180} are the sums over $1\le i\le n$, \texttt{a048679} applies the rewrite $0\to0$, $01\to1$ to the binary digits of \texttt{a003714 n}, \texttt{a035263 n} is the parity of the $2$-adic valuation of $2n$, and \texttt{a329320} is the sum displayed in Section~\ref{sec:intro}. The formalization proves
+\begin{itemize}
+\item \texttt{T\_bound}, \texttt{Z\_bound}: the bounds \eqref{eq:bounds};
+\item \texttt{tendsto\_ratio}: $V(n)/W(n)\to(5-\sqrt5)/2$, and \texttt{kimberling\_conjecture}: the limit exists and lies strictly between $6/5$ and $7/5$;
+\item \texttt{greathouse\_conjecture}: for every $j$, $a(\mathrm{A049651}(j))=j$, and $a(m)<j$ for every $m<\mathrm{A049651}(j)$;
+\item \texttt{kurkov\_formula}: $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$ for every $n\ge0$.
+\end{itemize}
+The proof of Theorem~\ref{thm:kur} in Lean is an induction on the Zeckendorf representation through the recursion $\mathrm{A329320}(2^{Q+1}+u)=\mathrm{A329320}(2^{Q+1}+2^Q+u)=1+\mathrm{A329320}(u)$ for $u<2^Q$, in place of Lemma~\ref{lem:A329320}. The asymptotic formulas with $\log_\varphi n$ in Theorem~\ref{thm:kim} are not formalized. These theorems depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the source contains no \texttt{sorry}, \texttt{admit}, \texttt{native\_decide} or added axiom.
+
+The archive also contains programs that compute the sequences from their definitions. A C program checks \eqref{eq:bounds} for $x\le10^8+1$, the second bound in exact integer arithmetic, Lemma~\ref{lem:Tfib} and the formula of Lemma~\ref{lem:Zfib} for $F_k\le10^8+1$, and the records for $n\le10^8$. A C\texttt{++} program checks Theorem~\ref{thm:kur} and Lemma~\ref{lem:pairing} for $n\le10^8$, listing A003714 as the integers without two adjacent ones in binary. A Python program checks the three theorems for $n\le10^6$, the agreement of the computed sequences with their terms in the OEIS, Corollary~\ref{cor:chains} and Lemmas~\ref{lem:compress} and \ref{lem:A329320}. A Julia program checks, in exact integer arithmetic, Lemma~\ref{lem:block} for $k\le400$, the decompositions \eqref{eq:T1}--\eqref{eq:Z1} for $x\le10^6+1$, Lemmas~\ref{lem:Tfib} and \ref{lem:Zfib} for $k\le400$, the identities of Section~\ref{sec:records} for $j\le300$, and the recursion used in the Lean proof of Theorem~\ref{thm:kur}. A Bash script checks small cases. The ratio $V(n)/W(n)$ equals $1.3421$ at $n=10^6$ and $1.3588$ at $n=10^8$.
+
+\section*{Acknowledgements}
+The author used the generative AI tool Claude Code (Anthropic) to develop the proofs, to write the Lean formalization and the verification programs, and to draft this article, in order to obtain proofs that are checked by the Lean kernel. The author reviewed the content and takes full responsibility for it.
+
+\section*{Disclosure statement}
+No conflict of interest has been reported by the author.
+
+\section*{Data availability}
+The Lean formalization, the verification programs and a script that runs them are available at \url{https://github.com/creelie/musical-rotary-phone}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{thebibliography}{99}
+
+\bibitem{CSH72}
+Carlitz, L., Scoville, R., Hoggatt, V. E., Jr. (1972).
+Lucas representations.
+\emph{Fibonacci Quart.} 10(1): 29--42.
+\url{https://doi.org/10.1080/00150517.1972.12430968}
+
+\bibitem{MU21}
+de Moura, L., Ullrich, S. (2021).
+The Lean 4 theorem prover and programming language.
+In: Platzer, A., Sutcliffe, G., eds. \emph{Automated Deduction -- CADE 28}. Lecture Notes in Computer Science, Vol. 12699. Cham: Springer, pp. 625--635.
+\url{https://doi.org/10.1007/978-3-030-79876-5_37}
+
+\bibitem{Kim20}
+Kimberling, C. (2020).
+Lucas representations of positive integers.
+\emph{J. Integer Seq.} 23: Article 20.9.5.
+\url{https://cs.uwaterloo.ca/journals/JIS/VOL23/Kimberling/kimber12.html}
+
+\bibitem{KKMW11}
+Kolo\u{g}lu, M., Kopp, G. S., Miller, S. J., Wang, Y. (2011).
+On the number of summands in Zeckendorf decompositions.
+\emph{Fibonacci Quart.} 49(2): 116--130.
+\url{https://doi.org/10.1080/00150517.2011.12428056}
+
+\bibitem{Lek52}
+Lekkerkerker, C. G. (1952).
+Voorstelling van natuurlijke getallen door een som van getallen van Fibonacci.
+\emph{Simon Stevin} 29: 190--195.
+
+\bibitem{Mathlib20}
+The mathlib Community (2020).
+The Lean mathematical library.
+In: \emph{Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs}. New York: ACM, pp. 367--381.
+\url{https://doi.org/10.1145/3372885.3373824}
+
+\bibitem{Pih88}
+Pihko, J. (1988).
+On Fibonacci and Lucas representations and a theorem of Lekkerkerker.
+\emph{Fibonacci Quart.} 26(3): 256--261.
+\url{https://doi.org/10.1080/00150517.1988.12429631}
+
+\bibitem{OEIS}
+OEIS Foundation Inc. (2026).
+The On-Line Encyclopedia of Integer Sequences.
+Published electronically at \href{https://oeis.org}{oeis.org}.
+
+\end{thebibliography}
+
+\medskip
+\noindent MSC2020: 11B39, 11A67
+
+\end{document}
