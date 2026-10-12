@@ -24,3 +24,5 @@ Files:
 - `MasterKimberlingFibonacciLucasZip.zip`: every file of the repository with the three files above
 
 Run `scripts/run_all.sh` to repeat the checks and `scripts/build_paper.sh` to rebuild the files above.
+
+Zenodo, all versions: [10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122); release v1.0.0: [10.5281/zenodo.23315123](https://doi.org/10.5281/zenodo.23315123).
