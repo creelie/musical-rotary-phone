@@ -8,3 +8,5 @@ import FibLucas
 #print axioms FibLucas.first_occurrence
 #print axioms FibLucas.kurkov_conjecture
 #print axioms FibLucas.kurkov_formula
+#print axioms FibLucas.a214981_asymptotic
+#print axioms FibLucas.a179180_asymptotic

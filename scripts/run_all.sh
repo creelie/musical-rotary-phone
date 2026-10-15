@@ -59,8 +59,8 @@ elif ! command -v lake > /dev/null; then echo "lake not found: skipping (install
         && lake env lean Axioms.lean 2>&1); st=$?
   echo "$out" > "$BUILD/lean.txt"
   n=$(grep -c "depends on axioms: \[propext, Classical.choice, Quot.sound\]" <<< "$out")
-  if [ $st -eq 0 ] && ! grep -q "error\|sorryAx" <<< "$out" && [ "$n" = 8 ]; then
-    ok "Lean: eight theorems, axioms propext, Classical.choice, Quot.sound only"
+  if [ $st -eq 0 ] && ! grep -q "error\|sorryAx" <<< "$out" && [ "$n" = 10 ]; then
+    ok "Lean: ten theorems, axioms propext, Classical.choice, Quot.sound only"
   else fail "Lean (see build/lean.txt)"; fi
 fi
 

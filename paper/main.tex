@@ -17,6 +17,8 @@
 \makeatother
 
 \newcommand{\N}{{\mathbb N}}
+\newcommand{\zenodoID}{10.5281/zenodo.0000000}
+\newcommand{\preprintURL}{https://github.com/creelie/musical-rotary-phone/blob/main/preprintKimberlingConjecture/KimberlingConjecture.pdf}
 \newcommand{\fl}[1]{\left\lfloor #1\right\rfloor}
 
 \theoremstyle{plain}
@@ -38,8 +40,8 @@
 \title{The Number of Terms in Greedy Fibonacci--Lucas Representations}
 
 \author{
-\name{Deep Bhattacharjee\thanks{Email address: d.bhattacharjee@erl-forschung.de. ORCID: 0000-0003-0466-750X.}}
-\affil{Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India}
+\name{Deep Bhattacharjee\textsuperscript{a}\thanks{\raggedright CONTACT Deep Bhattacharjee (corresponding author). Email: itsdeep@live.com (primary), d.bhattacharjee@erl-forschung.de. ORCID: 0000-0003-0466-750X. Ushashi Bhattacharya. Email: rai.bhattacharya.in@gmail.com. ORCID: 0009-0002-2254-3914.} and Ushashi Bhattacharya\textsuperscript{b}}
+\affil{\textsuperscript{a}Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India; \textsuperscript{b}Formerly, National Taiwan University, Taipei 106319, Taiwan}
 }
 
 \maketitle
@@ -48,11 +50,11 @@
 \bigskip
 
 \begin{abstract}
-Let $a(n)$ be the number of terms in the greedy representation of $n$ by the Fibonacci and Lucas numbers (OEIS A214973). We prove that $a(1)+\cdots+a(n)=\frac15 n\log_\varphi n+O(n)$. With Lekkerkerker's theorem this settles Kimberling's conjecture that the ratio of the number of Zeckendorf summands of $1,\dots,n$ to this sum tends to a limit in $(1.2,1.4)$; the limit is $(5-\sqrt5)/2$. We also prove the conjectures of Greathouse and Kurkov on A214973: $n$ first occurs at position $(F_{3n+1}-1)/2$, and $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$. The proofs are formalized in Lean~4.
+We prove Kimberling's conjecture on greedy representations by Fibonacci and Lucas numbers: the ratio of the number of Zeckendorf summands of $1,\dots,n$ to the number of terms of their greedy representations tends to a limit in $(1.2,1.4)$, and the limit is $(5-\sqrt5)/2$. We also prove the conjectures of Greathouse and Kurkov on the number of terms of the greedy representation.
 \end{abstract}
 
 \begin{keywords}
-Fibonacci numbers; Lucas numbers; Zeckendorf representation; greedy algorithm; summatory function
+Fibonacci numbers; Lucas numbers; Zeckendorf representation; greedy algorithm; summatory function; formal verification
 \end{keywords}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,7 +102,10 @@ Let $T(x)=W(x-1)$ and $Z(x)=V(x-1)$ for $x\ge1$, and let $c=(5-\sqrt5)/2=2+\psi$
 \begin{equation}\label{eq:bounds}
 \bigl|5T(x)-K(x)\,x\bigr|\le 19x,\qquad \bigl|5Z(x)-c\,K(x)\,x\bigr|\le 13x.
 \end{equation}
-Consequently $W(n)=\frac15 n\log_\varphi n+O(n)$, $V(n)=\frac c5 n\log_\varphi n+O(n)$,
+Consequently, for every $n\ge1$,
+\begin{equation}\label{eq:asym}
+\Bigl|W(n)-\frac15\,n\log_\varphi n\Bigr|\le 10n,\qquad \Bigl|V(n)-\frac c5\,n\log_\varphi n\Bigr|\le 10n,
+\end{equation}
 \begin{equation}\label{eq:rate}
 \Bigl|\frac{V(n)}{W(n)}-c\Bigr|\le\frac{51}{K(n+1)-19}\qquad\text{whenever } K(n+1)>19,
 \end{equation}
@@ -117,7 +122,14 @@ For every $j\ge1$, $a(\mathrm{A049651}(j))=j$ and $a(m)<j$ for $0\le m<\mathrm{A
 For every $n\ge0$, $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$. Hence Conjecture~\ref{conj:kur} holds.
 \end{theorem}
 
-The proof of Theorem~\ref{thm:kur} gives $a(n)$ in terms of the Zeckendorf representation of $n$: if its indices form maximal chains $k,k-2,k-4,\dots$ of lengths $\ell_1,\dots,\ell_t$, then $a(n)=\sum_i\lceil\ell_i/2\rceil$ (Corollary~\ref{cor:chains}). Section~\ref{sec:lean} describes the Lean~4 formalization of the three theorems and the programs that check them numerically.
+The proof of Theorem~\ref{thm:kur} gives $a(n)$ in terms of the Zeckendorf representation of $n$: if its indices form maximal chains $k,k-2,k-4,\dots$ of lengths $\ell_1,\dots,\ell_t$, then $a(n)=\sum_i\lceil\ell_i/2\rceil$ (Corollary~\ref{cor:chains}). The proofs are elementary, and every statement of Theorems~\ref{thm:kim}--\ref{thm:kur} is also proved in the Lean~4 proof assistant (Section~\ref{sec:lean}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_ratio.png}
+\caption{(a) The ratio $V(n)/W(n)$ for $10\le n\le10^7$, the conjectured interval $(1.2,1.4)$ shaded and the limit $c=(5-\sqrt5)/2$ dashed; the convergence is slow, since the error is of order $1/\log n$ by \eqref{eq:bounds}. (b) The two error terms of \eqref{eq:asym} divided by $n$; they stay far inside the bound $10$.}
+\label{fig:ratio}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The greedy step}\label{sec:greedy}
@@ -138,6 +150,13 @@ a(n)=\begin{cases}1+a(n-F_k), & n<L_{k-1},\\ 1+a(n-L_{k-1}), & n\ge L_{k-1}.\end
 \begin{proof}
 The identities follow from $L_{k-1}=F_{k-2}+F_k$ and $F_{k+1}-F_k-F_{k-2}=F_{k-1}-F_{k-2}=F_{k-3}$, and $F_{k-2},F_{k-3}\ge1$ gives the inequalities. The only Fibonacci number in $[F_k,F_{k+1})$ is $F_k$. For the Lucas numbers, $L_0=2<F_k$, the sequence $(L_m)_{m\ge1}$ is increasing, $L_{k-2}=F_{k-3}+F_{k-1}\le F_{k-2}+F_{k-1}=F_k$, and $L_k=F_{k-1}+F_{k+1}>F_{k+1}$. So $L_{k-1}$ is the only Lucas number in $(F_k,F_{k+1})$.
 \end{proof}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_greedy.png}
+\caption{The greedy step on $[F_k,F_{k+1})$, drawn to scale for $k=9$. By Lemma~\ref{lem:block} the block $[F_k,L_{k-1})$, of length $F_{k-2}$, is moved onto $[0,F_{k-2})$ by subtracting $F_k$, and the block $[L_{k-1},F_{k+1})$, of length $F_{k-3}$, onto $[0,F_{k-3})$ by subtracting $L_{k-1}$. The same three blocks give the decompositions \eqref{eq:T1} and \eqref{eq:T2} of the summatory function.}
+\label{fig:greedy}
+\end{figure}
 
 For $1\le n\le2$ we have $a(n)=1$. The Zeckendorf representation satisfies $z(n)=1+z(n-F_k)$ for $F_k\le n<F_{k+1}$, $k\ge2$, since its leading term is the largest Fibonacci number at most $n$.
 
@@ -241,7 +260,21 @@ The bounds \eqref{eq:bounds} are Propositions~\ref{prop:T} and \ref{prop:Z}. Let
 \[
 5V(n)-5cW(n)=\bigl(5Z(x)-cKx\bigr)-c\bigl(5T(x)-Kx\bigr)
 \]
-has absolute value at most $13x+2\cdot19x=51x$, while $5W(n)\ge(K-19)\,x$. This gives \eqref{eq:rate}, and $K(n+1)\to\infty$ gives the limit. From $\varphi^{k-2}\le F_k\le\varphi^{k-1}$ we get $\log_\varphi x<K(x)\le\log_\varphi x+2$, which with \eqref{eq:bounds} gives the asymptotic formulas. Finally $6/5<(5-\sqrt5)/2<7/5$ because $121<125<169$.
+has absolute value at most $13x+2\cdot19x=51x$, while $5W(n)\ge(K-19)\,x$. This gives \eqref{eq:rate}, and $K(n+1)\to\infty$ gives the limit. Finally $6/5<(5-\sqrt5)/2<7/5$ because $121<125<169$.
+
+For \eqref{eq:asym}, write $\lambda(t)=\log_\varphi t$. Since $F_{k+1}\le\varphi^k$ and $\varphi^{k-2}\le F_k$ for $k\ge2$, and $F_K\le x<F_{K+1}$, we have $\lambda(x)<K\le\lambda(x)+2$. Also $K\le x+1$, because $F_k\ge k-1$ for every $k\ge1$. Next,
+\[
+x\lambda(x)-n\lambda(n)=\lambda(x)+n\,\frac{\log(1+1/n)}{\log\varphi},
+\]
+and $n\log(1+1/n)\le1<3\log\varphi$, because $\varphi^3=2\varphi+1>e$. Hence $0\le x\lambda(x)-n\lambda(n)\le K+3\le n+5$. In the identity
+\[
+5W(n)-n\lambda(n)=\bigl(5T(x)-Kx\bigr)+\bigl(K-\lambda(x)\bigr)x+\bigl(x\lambda(x)-n\lambda(n)\bigr)
+\]
+the three terms lie in $[-19x,19x]$, $[0,2x]$ and $[0,n+5]$, so $-19(n+1)\le 5W(n)-n\lambda(n)\le 21(n+1)+n+5\le 48n$ for $n\ge1$. In the same way, since $0<c\le2$,
+\[
+5V(n)-c\,n\lambda(n)=\bigl(5Z(x)-cKx\bigr)+c\bigl(K-\lambda(x)\bigr)x+c\bigl(x\lambda(x)-n\lambda(n)\bigr)
+\]
+lies between $-13(n+1)$ and $13(n+1)+4(n+1)+2(n+5)\le46n$. Dividing by $5$ gives \eqref{eq:asym}.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -287,31 +320,36 @@ Since $\nu_2(2m)=1+\nu_2(m)$, we have $1-\mathrm{A035263}(1+u)=\nu_2(u+1)\bmod2$
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:kur}]
-For $n=0$ both sides are $0$. For $n\ge1$, Lemma~\ref{lem:compress} shows that the blocks of ones of $\mathrm{A048679}(n)$ correspond to the chains of the Zeckendorf representation of $n$, with the same lengths. Lemma~\ref{lem:A329320} and Corollary~\ref{cor:chains} give $\mathrm{A329320}(\mathrm{A048679}(n))=\sum_i\lceil\ell_i/2\rceil=a(n)$.
+For $n=0$ both sides are $0$. For $n\ge1$, Lemma~\ref{lem:compress} shows that the blocks of ones of $\mathrm{A048679}(n)$ correspond to the chains of the Zeckendorf representation of $n$, with the same lengths. Lemma~\ref{lem:A329320} and Corollary~\ref{cor:chains} give $\mathrm{A329320}(\mathrm{A048679}(n))=\sum_i\lceil\ell_i/2\rceil=a(n)$. Figure~\ref{fig:chains} follows the argument for $n=595$.
 \end{proof}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_chains.png}
+\caption{Kurkov's formula for $n=595=F_{14}+F_{12}+F_{10}+F_7+F_5+F_2$. The Zeckendorf indices form the chains $14,12,10$, then $7,5$, then $2$, and the greedy algorithm uses $L_{13}=F_{14}+F_{12}$, $F_{10}$, $L_6=F_7+F_5$ and $F_2$, so $a(595)=4$ (Corollary~\ref{cor:chains}). The binary word of $\mathrm{A003714}(595)$, preceded by a zero, splits into the factors $01$ and $0$; replacing each $01$ by $1$ gives $\mathrm{A048679}(595)=237$, whose blocks of ones have the lengths of the chains (Lemma~\ref{lem:compress}), and $\mathrm{A329320}(237)=4$ (Lemma~\ref{lem:A329320}).}
+\label{fig:chains}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Formal verification and computations}\label{sec:lean}
+\section{Formal verification}\label{sec:lean}
 
-Theorems~\ref{thm:kim}, \ref{thm:gh} and \ref{thm:kur} are formalized in Lean~4 \cite{MU21} with Mathlib \cite{Mathlib20} (version 4.34.1), in six files with 1460 lines, in the directory \texttt{verification/lean} of the archive described under Data availability. The definitions follow the OEIS names: \texttt{greedyTerm n} is the largest $s\le n$ that is a positive Fibonacci number or a Lucas number, \texttt{a214973} is defined by the greedy recursion, \texttt{a007895 n} is the length of Mathlib's Zeckendorf representation, \texttt{a214981} and \texttt{a179180} are the sums over $1\le i\le n$, \texttt{a048679} applies the rewrite $0\to0$, $01\to1$ to the binary digits of \texttt{a003714 n}, \texttt{a035263 n} is the parity of the $2$-adic valuation of $2n$, and \texttt{a329320} is the sum displayed in Section~\ref{sec:intro}. The formalization proves
-\begin{itemize}
-\item \texttt{T\_bound}, \texttt{Z\_bound}: the bounds \eqref{eq:bounds};
-\item \texttt{tendsto\_ratio}: $V(n)/W(n)\to(5-\sqrt5)/2$, and \texttt{kimberling\_conjecture}: the limit exists and lies strictly between $6/5$ and $7/5$;
-\item \texttt{greathouse\_conjecture}: for every $j$, $a(\mathrm{A049651}(j))=j$, and $a(m)<j$ for every $m<\mathrm{A049651}(j)$;
-\item \texttt{kurkov\_formula}: $a(n)=\mathrm{A329320}(\mathrm{A048679}(n))$ for every $n\ge0$.
-\end{itemize}
-The proof of Theorem~\ref{thm:kur} in Lean is an induction on the Zeckendorf representation through the recursion $\mathrm{A329320}(2^{Q+1}+u)=\mathrm{A329320}(2^{Q+1}+2^Q+u)=1+\mathrm{A329320}(u)$ for $u<2^Q$, in place of Lemma~\ref{lem:A329320}. The asymptotic formulas with $\log_\varphi n$ in Theorem~\ref{thm:kim} are not formalized. These theorems depend only on the axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}, and the source contains no \texttt{sorry}, \texttt{admit}, \texttt{native\_decide} or added axiom.
+Theorems~\ref{thm:kim}, \ref{thm:gh} and \ref{thm:kur} are formalized in Lean~4 \cite{MU21} with Mathlib \cite{Mathlib20}, version~4.34.1, and the formal proofs are checked by the Lean kernel. The formalization defines the sequences directly from their entries in the OEIS: $a$ by the greedy recursion over the positive Fibonacci and Lucas numbers, $z$ as the length of the Zeckendorf representation, $W$ and $V$ as sums over $1\le i\le n$, $\mathrm{A048679}$ by the rewriting of binary digits described in Section~\ref{sec:intro}, and $\mathrm{A329320}$ by the displayed sum. It proves the bounds \eqref{eq:bounds}, the explicit formulas \eqref{eq:asym}, the limit $V(n)/W(n)\to(5-\sqrt5)/2$ together with $6/5<(5-\sqrt5)/2<7/5$, Theorem~\ref{thm:gh} for every $j$, and Theorem~\ref{thm:kur} for every $n\ge0$. In the formal proof of Theorem~\ref{thm:kur} the induction runs on the Zeckendorf representation through the recursion $\mathrm{A329320}(2^{Q+1}+u)=\mathrm{A329320}(2^{Q+1}+2^Q+u)=1+\mathrm{A329320}(u)$ for $u<2^Q$, in place of Lemma~\ref{lem:A329320}. The proofs depend only on the axioms of Lean's logic, namely propositional extensionality, choice and the soundness of quotients; they have no unproved step and add no axiom.
 
-The archive also contains programs that compute the sequences from their definitions. A C program checks \eqref{eq:bounds} for $x\le10^8+1$, the second bound in exact integer arithmetic, Lemma~\ref{lem:Tfib} and the formula of Lemma~\ref{lem:Zfib} for $F_k\le10^8+1$, and the records for $n\le10^8$. A C\texttt{++} program checks Theorem~\ref{thm:kur} and Lemma~\ref{lem:pairing} for $n\le10^8$, listing A003714 as the integers without two adjacent ones in binary. A Python program checks the three theorems for $n\le10^6$, the agreement of the computed sequences with their terms in the OEIS, Corollary~\ref{cor:chains} and Lemmas~\ref{lem:compress} and \ref{lem:A329320}. A Julia program checks, in exact integer arithmetic, Lemma~\ref{lem:block} for $k\le400$, the decompositions \eqref{eq:T1}--\eqref{eq:Z1} for $x\le10^6+1$, Lemmas~\ref{lem:Tfib} and \ref{lem:Zfib} for $k\le400$, the identities of Section~\ref{sec:records} for $j\le300$, and the recursion used in the Lean proof of Theorem~\ref{thm:kur}. A Bash script checks small cases. The ratio $V(n)/W(n)$ equals $1.3421$ at $n=10^6$ and $1.3588$ at $n=10^8$.
+Independent computations in exact integer arithmetic, from the definitions of the sequences, confirm \eqref{eq:bounds} for $x\le10^8+1$, Lemma~\ref{lem:Tfib} and the formula of Lemma~\ref{lem:Zfib} for $F_k\le10^8+1$, Theorems~\ref{thm:gh} and \ref{thm:kur} and Lemma~\ref{lem:pairing} for $n\le10^8$, and Lemmas~\ref{lem:block}, \ref{lem:Tfib} and \ref{lem:Zfib} for $k\le400$; they agree with the terms of the sequences recorded in the OEIS. The ratio $V(n)/W(n)$ equals $1.3421$ at $n=10^6$ and $1.3588$ at $n=10^8$.
 
 \section*{Acknowledgements}
-The author used the generative AI tool Claude Code (Anthropic) to develop the proofs, to write the Lean formalization and the verification programs, and to draft this article, in order to obtain proofs that are checked by the Lean kernel. The author reviewed the content and takes full responsibility for it.
+The authors used the generative AI tool Claude (Anthropic), through Claude Code, to assist with the proofs, the Lean formalization, the computations and the preparation of this article. The authors reviewed and edited the content and take full responsibility for it.
 
 \section*{Disclosure statement}
-No conflict of interest has been reported by the author.
+Competing interests: none.
+
+\section*{Funding}
+None.
 
 \section*{Data availability}
-The Lean formalization, the verification programs and a script that runs them are archived on Zenodo at \url{https://doi.org/10.5281/zenodo.23315122} and available at \url{https://github.com/creelie/musical-rotary-phone}.
+\begingroup\raggedright
+Deep Bhattacharjee computed the Lean formalization and the Julia, C, C++, shell and Python computations with the help of AI assistance (Claude, Anthropic). The Lean formalization of the proofs in this paper is archived at Zenodo, doi:\href{https://doi.org/\zenodoID}{\zenodoID}. The paper is available at \url{\preprintURL}.\par
+\endgroup
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{thebibliography}{99}
@@ -365,6 +403,6 @@ Published electronically at \href{https://oeis.org}{oeis.org}.
 \end{thebibliography}
 
 \medskip
-\noindent MSC2020: 11B39, 11A67
+\noindent MSC2020: Primary 11B39; Secondary 11A67, 68V15
 
 \end{document}

@@ -42,20 +42,27 @@ by a large language model.
 
 ## Length and format
 
-- The manuscript is 8 pages in the journal template, with a four-sentence
-  abstract, keywords separated by semicolons, and MSC2020 codes (11B39, 11A67)
-  after the references.
-- The source is a single file `main.tex` with the class file `interact.cls`;
-  the references are in the source (`thebibliography`), so no `.bib` or
-  `.bbl` file is needed. `dist/kimberling-fibonacci-lucas-tex.zip` and the
-  arXiv tarball contain exactly these two files.
+- The manuscript is 9 pages in the journal template, by Deep Bhattacharjee
+  (corresponding author) and Ushashi Bhattacharya, with a two-sentence
+  abstract, keywords separated by semicolons, three figures, and MSC2020
+  codes (Primary 11B39; Secondary 11A67, 68V15) after the references.
+- The source is a single file `main.tex` with the class file `interact.cls`
+  and the three figures as PNG in `figures/`; the references are in the source
+  (`thebibliography`), so no `.bib` or `.bbl` file is needed.
+  `dist/KimberlingConjecture_final2-tex.zip` and the arXiv tarball contain
+  exactly these files.
+- The paper names no program or file; the computations and the Lean
+  formalization are described in prose, and the archive is cited under Data
+  availability.
 - Template rules followed: references in alphabetical order, numbered, in the
   Taylor & Francis MAA style, with DOIs; every OEIS sequence cited by its
   A-number; no contractions or abbreviations such as "iff" or "e.g."; periods
   at the end of sentences that end with a displayed equation; a centered dot
   only between two numbers; proofs end with the open square; a "Disclosure
-  statement" section before the references; AI use acknowledged in the
-  "Acknowledgements" section.
+  statement" section (competing interests: none) and a "Funding" section
+  (none) before the references; AI use acknowledged in the "Acknowledgements"
+  section; a "Data availability" section with the Zenodo DOI of the Lean
+  formalization and the link to the PDF in `preprintKimberlingConjecture/`.
 - The template's month, year, volume and number fields are left as
   placeholders for the production office.
 - The journal's instructions for authors on tandfonline.com returned HTTP 403
@@ -79,5 +86,6 @@ by a large language model.
 - The statement in `paper/main.tex` names Claude Code (Anthropic), how it was
   used and why. Add the version number of the tool in the submitted
   manuscript, as the policy asks.
-- Every proof is checked by the Lean 4 kernel (Section 6 of the paper), and
+- Every statement of Theorems 1.4 to 1.6 is checked by the Lean 4 kernel
+  (Section 6 of the paper), and
   every DOI in the bibliography was checked against its Crossref record.

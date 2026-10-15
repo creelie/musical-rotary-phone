@@ -1,13 +1,19 @@
 {
   "title": "The number of terms in greedy Fibonacci-Lucas representations: paper, Lean 4 formalization and verification code",
-  "description": "<p>Let a(n) be the number of terms in the greedy representation of n by the Fibonacci and Lucas numbers (OEIS A214973). The paper proves that a(1) + ... + a(n) = (1/5) n log_phi n + O(n), with explicit bounds |5T(x) - K(x) x| &lt;= 19x and |5Z(x) - c K(x) x| &lt;= 13x for the summatory functions, so that the ratio of the number of Zeckendorf summands of 1, ..., n to this sum tends to (5 - sqrt 5)/2. This settles Kimberling's conjecture (A214981; J. Integer Seq. 23 (2020), Article 20.9.5) that the limit exists and lies in (1.2, 1.4). It also proves Greathouse's conjecture that n first occurs in A214973 at (F_{3n+1} - 1)/2, and Kurkov's conjecture a(n) = A329320(A048679(n)).</p><p><code>paper/</code> holds the LaTeX source in the Fibonacci Quarterly template and the compiled PDF; <code>dist/</code> holds the PDF, the LaTeX source zip, the arXiv tarball and <code>MasterKimberlingFibonacciLucasZip.zip</code> with every file of the repository. <code>verification/lean/</code> is a Lean 4 and Mathlib formalization of the three theorems (6 files); its eight main theorems depend only on the axioms propext, Classical.choice and Quot.sound. <code>verification/</code> also contains independent checks in C and C++ (n &lt;= 10^8), Python (n &lt;= 10^6, from the OEIS definitions), Julia (every lemma of the proofs) and Bash, and <code>scripts/run_all.sh</code> runs the Lean build, the axiom check and all programs.</p>",
+  "description": "<p>Paper by Deep Bhattacharjee and Ushashi Bhattacharya. Let a(n) be the number of terms in the greedy representation of n by the Fibonacci and Lucas numbers (OEIS A214973), W(n) = a(1) + ... + a(n) (A214981), and V(n) the number of Zeckendorf summands of 1, ..., n (A179180). The paper proves |5T(x) - K(x) x| &lt;= 19x and |5Z(x) - c K(x) x| &lt;= 13x for the summatory functions, hence |W(n) - (1/5) n log_phi n| &lt;= 10n and |V(n) - (c/5) n log_phi n| &lt;= 10n with c = (5 - sqrt 5)/2, and V(n)/W(n) -&gt; (5 - sqrt 5)/2. This settles Kimberling's conjecture (A214981; J. Integer Seq. 23 (2020), Article 20.9.5) that the limit exists and lies in (1.2, 1.4). It also proves Greathouse's conjecture that n first occurs in A214973 at (F_{3n+1} - 1)/2, and Kurkov's conjecture a(n) = A329320(A048679(n)).</p><p><code>preprintKimberlingConjecture/</code> holds the paper as a PDF; <code>paper/</code> holds the LaTeX source in the Fibonacci Quarterly template; <code>dist/</code> holds the PDF, the LaTeX source zip and the arXiv tarball, and <code>MasterKimberlingConjecture_masterzipfinal2.zip</code> holds every file of the repository. <code>verification/lean/</code> is a Lean 4 and Mathlib formalization of every statement of the three theorems (7 files); its ten main theorems depend only on the axioms propext, Classical.choice and Quot.sound. <code>verification/</code> also contains independent checks in C and C++ (n &lt;= 10^8), Python (n &lt;= 10^6, from the OEIS definitions), Julia (every lemma of the proofs) and Bash, and <code>scripts/run_all.sh</code> runs the Lean build, the axiom check and all programs.</p>",
   "upload_type": "software",
   "license": "mit",
   "access_right": "open",
   "creators": [
     {
       "name": "Bhattacharjee, Deep",
-      "orcid": "0000-0003-0466-750X"
+      "orcid": "0000-0003-0466-750X",
+      "affiliation": "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
+    },
+    {
+      "name": "Bhattacharya, Ushashi",
+      "orcid": "0009-0002-2254-3914",
+      "affiliation": "Formerly, National Taiwan University, Taipei 106319, Taiwan"
     }
   ],
   "keywords": [
@@ -16,7 +22,8 @@
     "Zeckendorf representation",
     "greedy algorithm",
     "OEIS",
-    "Lean 4"
+    "Lean 4",
+    "formal verification"
   ],
   "related_identifiers": [
     {
@@ -35,5 +42,6 @@
       "scheme": "url"
     }
   ],
-  "language": "eng"
+  "language": "eng",
+  "version": "2.0.0"
 }

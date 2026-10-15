@@ -10,3 +10,4 @@ build/
 *.spl
 __pycache__/
 .lake/
+figures/*.pdf

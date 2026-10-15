@@ -1,20 +1,28 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
-title: "The number of terms in greedy Fibonacci-Lucas representations"
+title: "The number of terms in greedy Fibonacci-Lucas representations: paper, Lean 4 formalization and verification code"
 type: software
 authors:
   - family-names: Bhattacharjee
     given-names: Deep
     orcid: "https://orcid.org/0000-0003-0466-750X"
     affiliation: "Formerly, Electro-Gravitational Space Propulsion Laboratory (EGSPL), Bhubaneswar, Odisha 751030, India"
-    email: d.bhattacharjee@erl-forschung.de
-version: 1.0.1
-date-released: 2026-10-12
+    email: itsdeep@live.com
+  - family-names: Bhattacharya
+    given-names: Ushashi
+    orcid: "https://orcid.org/0009-0002-2254-3914"
+    affiliation: "Formerly, National Taiwan University, Taipei 106319, Taiwan"
+    email: rai.bhattacharya.in@gmail.com
+version: 2.0.0
+date-released: 2026-10-15
 doi: 10.5281/zenodo.23315122
 identifiers:
   - type: doi
     value: 10.5281/zenodo.23315122
     description: "Zenodo, all versions"
+  - type: doi
+    value: 10.5281/zenodo.23315200
+    description: "Zenodo, release v1.0.1"
   - type: doi
     value: 10.5281/zenodo.23315123
     description: "Zenodo, release v1.0.0"
@@ -29,12 +37,12 @@ keywords:
   - Lean 4
 abstract: >-
   Let a(n) be the number of terms in the greedy representation of n by the
-  Fibonacci and Lucas numbers (OEIS A214973). We prove that
-  a(1) + ... + a(n) = (1/5) n log_phi n + O(n). With Lekkerkerker's theorem
-  this settles Kimberling's conjecture that the ratio of the number of Zeckendorf summands of 1, ..., n
-  to this sum tends to a limit in (1.2, 1.4); the limit is (5 - sqrt 5)/2.
-  We also prove the conjectures of Greathouse and Kurkov on A214973. The
-  proofs are formalized in Lean 4.
+  Fibonacci and Lucas numbers (OEIS A214973). We prove Kimberling's
+  conjecture that the ratio of the number of Zeckendorf summands of
+  1, ..., n to a(1) + ... + a(n) tends to a limit in (1.2, 1.4); the limit
+  is (5 - sqrt 5)/2, and |a(1) + ... + a(n) - (1/5) n log_phi n| <= 10n.
+  We also prove the conjectures of Greathouse and Kurkov on A214973. Every
+  statement is formalized in Lean 4.
 references:
   - type: article
     title: "Lucas representations of positive integers"
