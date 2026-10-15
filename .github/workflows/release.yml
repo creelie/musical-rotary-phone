@@ -1,7 +1,7 @@
 name: release
 
 # Run by hand from the Actions tab (or the API) after the PR is merged:
-# it tags the chosen commit, publishes a GitHub release with the files in
+# it runs every check, tags the chosen commit, publishes a GitHub release with the files in
 # dist/ and the notes in .github/RELEASE_NOTES.md, and Zenodo archives the
 # release and mints a DOI if the repository is switched on at
 # https://zenodo.org/account/settings/github/.
@@ -12,7 +12,7 @@ on:
       tag:
         description: "Release tag, e.g. v1.0.0"
         required: true
-        default: "v1.0.0"
+        default: "v2.0.0"
       target:
         description: "Branch or commit to tag"
         required: true
@@ -24,16 +24,31 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.target }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1.10"
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Lean build, axiom check and the C, C++, Bash, Python and Julia checks
+        run: scripts/run_all.sh
       - name: Check the release files
         run: |
-          for f in dist/kimberling-fibonacci-lucas.pdf \
-                   dist/kimberling-fibonacci-lucas-tex.zip \
-                   dist/kimberling-fibonacci-lucas-arxiv.tar.gz \
-                   dist/MasterKimberlingFibonacciLucasZip.zip; do
+          for f in dist/KimberlingConjecture_final2.pdf \
+                   dist/KimberlingConjecture_final2-tex.zip \
+                   dist/KimberlingConjecture_final2-arxiv.tar.gz \
+                   preprintKimberlingConjecture/KimberlingConjecture.pdf \
+                   MasterKimberlingConjecture_masterzipfinal2.zip; do
             test -s "$f" || { echo "missing $f"; exit 1; }
           done
       - name: Publish the release
