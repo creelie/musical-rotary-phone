@@ -15,8 +15,11 @@ authors:
     email: rai.bhattacharya.in@gmail.com
 version: 2.0.0
 date-released: 2026-10-15
-doi: 10.5281/zenodo.23315122
+doi: 10.5281/zenodo.23385265
 identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23385265
+    description: "Zenodo, release v2.0.0"
   - type: doi
     value: 10.5281/zenodo.23315122
     description: "Zenodo, all versions"

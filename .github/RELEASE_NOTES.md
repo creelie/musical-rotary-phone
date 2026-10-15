@@ -24,4 +24,4 @@ Files:
 
 The repository also holds `preprintKimberlingConjecture/KimberlingConjecture.pdf` and `MasterKimberlingConjecture_masterzipfinal2.zip`, which holds every file of the repository. Run `scripts/run_all.sh` to repeat the checks and `scripts/build_paper.sh` to rebuild the files above.
 
-Zenodo, all versions: [10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122).
+Zenodo: release v2.0.0 [10.5281/zenodo.23385265](https://doi.org/10.5281/zenodo.23385265); all versions [10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122).

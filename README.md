@@ -7,7 +7,7 @@ and Ushashi Bhattacharya (Formerly, National Taiwan University, Taipei 106319,
 Taiwan; rai.bhattacharya.in@gmail.com; ORCID 0009-0002-2254-3914).
 
 - Paper: [`preprintKimberlingConjecture/KimberlingConjecture.pdf`](preprintKimberlingConjecture/KimberlingConjecture.pdf)
-- Lean 4 formalization on Zenodo: release v2.0.0 (DOI recorded here once minted; all versions: doi:[10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122))
+- Lean 4 formalization on Zenodo: doi:[10.5281/zenodo.23385265](https://doi.org/10.5281/zenodo.23385265) (release v2.0.0; all versions: doi:[10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122))
 - Master zip: [`MasterKimberlingConjecture_masterzipfinal2.zip`](https://github.com/creelie/musical-rotary-phone/raw/main/MasterKimberlingConjecture_masterzipfinal2.zip)
 - Target journal: The Fibonacci Quarterly (`journal/JOURNAL.md`)
 - MSC 2020: Primary 11B39; Secondary 11A67, 68V15
@@ -131,7 +131,7 @@ pdflatex, zip and tar; `figures/make_figures.sh` redraws the figures).
 
 | Release | Zenodo DOI |
 |---|---|
-| v2.0.0 (two authors, journal format, log_phi n formulas in Lean) | recorded here once minted |
+| v2.0.0 (two authors, journal format, log_phi n formulas in Lean) | [10.5281/zenodo.23385265](https://doi.org/10.5281/zenodo.23385265) |
 | v1.0.1 | [10.5281/zenodo.23315200](https://doi.org/10.5281/zenodo.23315200) |
 | v1.0.0 | [10.5281/zenodo.23315123](https://doi.org/10.5281/zenodo.23315123) |
 | all versions | [10.5281/zenodo.23315122](https://doi.org/10.5281/zenodo.23315122) |
