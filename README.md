@@ -62,7 +62,7 @@ the exact value 5Z(F_k) = k L_{k-1} - 2F_k.
 | Path | Contents |
 |---|---|
 | `paper/` | LaTeX source (`main.tex`, Taylor & Francis `interact` class from the Fibonacci Quarterly template, `figures/` as PNG) and the compiled `main.pdf` |
-| `figures/` | TikZ sources of the three figures, `ratio_data.py` (the data of the third), and `make_figures.sh`, which writes them to `paper/figures/` |
+| `figures/` | TikZ sources of the three figures and `make_figures.sh`, which writes them to `paper/figures/` |
 | `verification/lean/` | Lean 4 + Mathlib formalization (7 files, 1617 lines); `FibLucas/Defs.lean` holds the definitions, `Limit.lean`, `LogFormula.lean`, `Records.lean` and `Kurkov.lean` the theorems |
 | `verification/c/` | `kimberling.c`: Theorems 1.4 and 1.5 for n <= 10^8, the second bound in exact integer arithmetic |
 | `verification/cpp/` | `kurkov.cpp`: Theorem 1.6 and the pairing lemma for n <= 10^8 |
